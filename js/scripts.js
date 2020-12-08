@@ -14,6 +14,7 @@ function fetchData(url) {
             createModalWindow(employee);
         })
         createSearchBar();
+        eventListener();
     })
 }
 
@@ -79,9 +80,13 @@ function createModalWindow(data) {
     modalDiv.style.display = 'none';
 }
 
-const card = document.querySelector('card');
-// for (let i = 0; i < card.length; i++) {
-//     card[i].addEventListener('click', () => card[i].style.display = ' ');
-//     };
-
+function eventListener() {
+    const card = document.getElementsByClassName('card');
+    const modal = document.getElementsByClassName('modal-container');
+    for (let i = 0; i < card.length; i++) {
+        card[i].addEventListener('click', () => {
+        modal[i].style.display = ' ';
+        });
+    }
     console.log(card);
+}
