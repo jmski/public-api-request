@@ -1,5 +1,5 @@
 const gallery = document.getElementById('gallery');
-
+const card = document.getElementsByClassName('card');
 
 
 // fetch API function
@@ -7,18 +7,16 @@ function fetchData(url) {
     return fetch(url)
     .then(checkStatus)
     .then(response => response.json())
-    // .then(data => console.log(data))
+    // .then(data => console.log(data)) // view data
     .then(data => {
         const employees = data.results;
         employees.forEach((employee) => {
             createGallery(employee);
+            // createModalWindow(employee);
         })
+        createSearchBar();
     })
 }
-
-
-createSearchBar();
-
 
 Promise.all([
 fetchData('https://randomuser.me/api/?results=12&nat=us')
@@ -32,6 +30,18 @@ function checkStatus(response) {
     }
 } 
 
+// this function creates the search bar
+function createSearchBar() {
+    const searchHTML = `
+        <form action="#" method="get">
+        <input type="search" id="search-input" class="search-input" placeholder="Search...">
+        <input type="submit" value="&#x1F50D;" id="search-submit" class="search-submit">
+        </form>`;
+    const searchDiv = document.querySelector('.search-container');
+    searchDiv.insertAdjacentHTML('beforeend', searchHTML);
+}
+
+// creates the gallery 
 function createGallery(data) {
     const galleryHTML = `               
         <div class="card">
@@ -47,16 +57,21 @@ function createGallery(data) {
     gallery.insertAdjacentHTML('beforeend', galleryHTML);
 }
 
-
-// this function creates the search bar
-function createSearchBar() {
-    const results = [ ];
-    const searchHTML = `
-        <form action="#" method="get">
-        <input type="search" id="search-input" class="search-input" placeholder="Search...">
-        <input type="submit" value="&#x1F50D;" id="search-submit" class="search-submit">
-        </form>`;
-    const searchDiv = document.querySelector('.search-container');
-    searchDiv.insertAdjacentHTML('beforeend', searchHTML);
-
+// creates the modal window
+function createModalWindow(data) {
+    const modalHTML = `
+    <div class="modal-container">
+        <div class="modal">
+            <button type="button" id="modal-close-btn" class="modal-close-btn"><strong>X</strong></button>
+            <div class="modal-info-container">
+                <img class="modal-img" src="${data.picture.large}" alt="profile picture">
+                <h3 id="name" class="modal-name cap">${data.name.first} ${data.name.last}</h3>
+                <p class="modal-text">${data.email}</p>
+                <p class="modal-text cap">${data.location.city}</p>
+                <hr>
+                <p class="modal-text">${data.phone}</p>
+                <p class="modal-text">${data.location.street.name}, ${data.location.state}, ${data.location.postcode}</p>
+                <p class="modal-text">Birthday: ${data.dob}</p>
+        </div>
+    </div>`;
 }
