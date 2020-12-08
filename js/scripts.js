@@ -1,38 +1,25 @@
 const gallery = document.getElementById('gallery');
 
+// fetch API function
+function fetchData(url) {
+    return fetch(url)
+    .then(checkStatus)
+    .then(response => response.json())
+    // .then(data => console.log(data)) // view data
+    .then(data => {
+        const employees = data.results;
+        employees.forEach((employee) => {
+            createGallery(employee);
+            createModalWindow(employee);
+        })
+        createSearchBar();
+        eventListener();
+    })
+}
 
-// // fetch API function
-// function fetchData(url) {
-//     return fetch(url)
-//     .then(checkStatus)
-//     .then(response => response.json())
-//     // .then(data => console.log(data)) // view data
-//     .then(data => {
-//         const employees = data.results;
-//         employees.forEach((employee) => {
-//             createGallery(employee);
-//             createModalWindow(employee);
-//         })
-//         createSearchBar();
-//         eventListener();
-//     })
-// }
-
-// Promise.all([
-// fetchData('https://randomuser.me/api/?results=12&nat=us')
-// ])
-
-fetch("https://randomuser.me/api/?results=12&nat=us")
-  .then(response => response.json())
-  .then(data => {
-    const employees = data.results
-    employees.forEach((employee) => {
-      createGallery(employee);
-      createModalWindow(employee);
-    });
-    eventListener();
-    createSearchBar();
-});
+Promise.all([
+fetchData('https://randomuser.me/api/?results=12&nat=us')
+])
 
 function checkStatus(response) {
     if (response.ok) {
@@ -94,21 +81,30 @@ function createModalWindow(data) {
         </div>`;
     modalDiv.insertAdjacentHTML('beforeend', modalHTML);
    modalDiv.style.display = 'none';
-   
 }
 
 function eventListener() {
     const card = document.getElementsByClassName('card');
     const modalDiv = document.getElementsByClassName('modal-container');
-    const button = document.getElementsByClassName('modal-close-btn');
+    const closeBtn = document.getElementsByClassName('modal-close-btn');
+    const buttons = document.getElementsByClassName('modal-btn-container');
     for (let i = 0; i < card.length; i++) {
         card[i].addEventListener('click', () => {
         console.log(card[i]);
         console.log(modalDiv[i]);
         modalDiv[i].style.display = 'block';
         });
-        button[i].addEventListener('click', (event) => {
+        closeBtn[i].addEventListener('click', (event) => {
             modalDiv[i].style.display = 'none';
+        });
+        buttons[i].addEventListener('click', (event) => {
+            if (event.target.className === 'modal-prev btn') {
+                modalDiv[i].style.display = 'none';
+                modalDiv[i-1].style.display = '';
+            } else if (event.target.className === 'modal-next btn') {
+                modalDiv[i].style.display = 'none';
+                modalDiv[i+1].style.display = '';
+            }
         });
     }
 }
