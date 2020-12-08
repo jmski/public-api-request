@@ -1,3 +1,4 @@
+// global variables
 const gallery = document.getElementById('gallery');
 
 // fetch API function
@@ -21,6 +22,7 @@ Promise.all([
 fetchData('https://randomuser.me/api/?results=12&nat=us')
 ])
 
+// checks the status of the response
 function checkStatus(response) {
     if (response.ok) {
         return Promise.resolve(response);
@@ -40,7 +42,7 @@ function createSearchBar() {
     searchDiv.insertAdjacentHTML('beforeend', searchHTML);
 }
 
-// creates the gallery 
+// creates the gallery of 12 people with their picture and info
 function createGallery(data) {
     const galleryHTML = `               
         <div class="card">
@@ -83,24 +85,35 @@ function createModalWindow(data) {
    modalDiv.style.display = 'none';
 }
 
+// this function opens/ closes the modal window on click and navigate through the cards
 function eventListener() {
     const card = document.getElementsByClassName('card');
     const modalDiv = document.getElementsByClassName('modal-container');
     const closeBtn = document.getElementsByClassName('modal-close-btn');
     const buttons = document.getElementsByClassName('modal-btn-container');
+    const prevBtn = document.getElementsByClassName('modal-prev btn');
+    const nextBtn = document.getElementsByClassName('modal-next btn');
     for (let i = 0; i < card.length; i++) {
+        prevBtn[0].style.display = 'none'; //hides the prev btn on first card
+        nextBtn[nextBtn.length -1].style.display = 'none'; //hide next btn on last card
+
+        // displays modal window on click
         card[i].addEventListener('click', () => {
-        console.log(card[i]);
-        console.log(modalDiv[i]);
         modalDiv[i].style.display = 'block';
         });
+
+        // closes modal window
         closeBtn[i].addEventListener('click', (event) => {
             modalDiv[i].style.display = 'none';
         });
+
+        // prev and next button
         buttons[i].addEventListener('click', (event) => {
+             // if prev button is clicked it will go to the previous modal
             if (event.target.className === 'modal-prev btn') {
                 modalDiv[i].style.display = 'none';
                 modalDiv[i-1].style.display = '';
+            // if next button is clicked it will go the next modal
             } else if (event.target.className === 'modal-next btn') {
                 modalDiv[i].style.display = 'none';
                 modalDiv[i+1].style.display = '';
