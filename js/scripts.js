@@ -1,5 +1,4 @@
 const gallery = document.getElementById('gallery');
-const card = document.getElementsByClassName('card');
 
 
 // fetch API function
@@ -12,7 +11,7 @@ function fetchData(url) {
         const employees = data.results;
         employees.forEach((employee) => {
             createGallery(employee);
-            // createModalWindow(employee);
+            createModalWindow(employee);
         })
         createSearchBar();
     })
@@ -59,6 +58,8 @@ function createGallery(data) {
 
 // creates the modal window
 function createModalWindow(data) {
+    const modalDiv = document.createElement('div');
+    gallery.appendChild(modalDiv);
     const modalHTML = `
     <div class="modal-container">
         <div class="modal">
@@ -71,7 +72,16 @@ function createModalWindow(data) {
                 <hr>
                 <p class="modal-text">${data.phone}</p>
                 <p class="modal-text">${data.location.street.name}, ${data.location.state}, ${data.location.postcode}</p>
-                <p class="modal-text">Birthday: ${data.dob}</p>
+                <p class="modal-text">Birthday: ${data.dob.date}</p>
         </div>
     </div>`;
+    modalDiv.insertAdjacentHTML('beforeend', modalHTML);
+    modalDiv.style.display = 'none';
 }
+
+const card = document.querySelector('card');
+// for (let i = 0; i < card.length; i++) {
+//     card[i].addEventListener('click', () => card[i].style.display = ' ');
+//     };
+
+    console.log(card);
