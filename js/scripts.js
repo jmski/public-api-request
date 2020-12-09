@@ -18,6 +18,7 @@ function fetchData(url) {
         searchEmployee();
         eventListener();
     })
+    .catch(error => console.log('looks like there was a problem', error))
 }
 
 Promise.all([
