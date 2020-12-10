@@ -2,73 +2,24 @@
 const gallery = document.getElementById('gallery');
 const card = document.getElementsByClassName('card');
 
-// fetch API function
-function fetchData(url) {
-    return fetch(url)
-    .then(checkStatus)
-    .then(response => response.json())
-    //.then(data => console.log(data)) // view data
-    .then(data => {
-        const employees = data.results;
-        employees.forEach((employee) => {
-            createGallery(employee);
-            createModalWindow(employee);
-        })
-        createSearchBar();
-        searchEmployee();
-        eventListener();
-    })
-    .catch(error => console.log('looks like there was a problem', error))
-}
-
-Promise.all([
-fetchData('https://randomuser.me/api/?results=12&nat=us')
-])
-
-// checks the status of the response
-function checkStatus(response) {
-    if (response.ok) {
-        return Promise.resolve(response);
-    } else {
-        return Promise.reject(new Error(response.statusText));
-    }
-} 
-
-// this function creates the search bar
-function createSearchBar() {
-    const searchDiv = document.querySelector('.search-container');
-    const searchHTML = `
-        <form action="#" method="get">
-        <input type="search" id="search-input" class="search-input" placeholder="Search...">
-        <input type="submit" value="&#x1F50D;" id="search-submit" class="search-submit">
-        </form>`;
-    searchDiv.insertAdjacentHTML('beforeend', searchHTML);
-}
-// this function matches employee to input
-function searchEmployee (data) {
-    const searchInput = document.querySelector('#search-input');
-    
-    searchInput.addEventListener('keyup', (event) => {
-        const input = event.target.value.toLowerCase();
-
-        for (let i = 0; i < card.length; i++) {
-            const employee = card[i].toLowerCase();
-            console.log(input);
-            if (employee.includes(input)) {
-                card[i].style.display = 'block';
-            } else if (employee.includes(input) === false) {
-                card[i].style.display = 'none';
-            } else {
-                card[i].style.display = 'block';
-            }
-        }
+// fetch data from api and convert to json
+fetch("https://randomuser.me/api/?results=12&nat=us")
+  .then(response => response.json())
+  .then(data => {
+    const employees = data.results
+    // console.log (data.results); // view data
+    employees.forEach((employee) => {
+      createGallery(employee);
+      createModalWindow(employee);
     });
-}
+    eventListener();
+    createSearchBar();
+});
 
 // creates the gallery of 12 people with their picture and info
 function createGallery(data) {
     const galleryHTML = `               
-        <div class="card">
+        <div id="${data.name.first} ${data.name.last}" class="card">
             <div class="card-img-container">
                 <img class="card-img" src="${data.picture.large}" alt="${data.name.first} ${data.name.last}">
             </div>
@@ -149,3 +100,33 @@ function eventListener() {
         });
     }
 }
+
+// this function creates the search bar
+function createSearchBar() {
+    const searchHTML = `
+      <form action="#" method="get">
+          <input type="search" id="search-input" class="search-input" placeholder="Search...">
+          <input type="submit" value="&#x1F50D;" id="search-submit" class="search-submit">
+      </form>`;
+    const searchDiv = document.querySelector('.search-container');
+    searchDiv.insertAdjacentHTML('beforeEnd', searchHTML);
+  
+    const searchInput = document.getElementById('search-input');
+  
+    // search functionality
+    searchDiv.addEventListener('keyup', (event) => {
+      event.preventDefault();
+      const input = searchInput.value.toLowerCase();
+  
+      for(let i = 0; i < card.length; i++) {
+        const employeeName = card[i].id.toLowerCase(); // checks card id - used as filter
+        if(employeeName.includes(input)) {
+          card[i].style.display = '';
+        } else if (employeeName.includes(input) === false) {
+          card[i].style.display = 'none';
+        } else {
+          card[i].style.display = '';
+        }
+      }
+    })
+  }
